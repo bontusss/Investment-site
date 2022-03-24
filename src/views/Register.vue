@@ -1,0 +1,205 @@
+<script setup>
+import { ref } from 'vue'
+import { createUserWithEmailAndPassword, getAuth } from 'firebase/auth'
+import { useRouter, RouterLink } from 'vue-router'
+import { db } from '../main';
+import { addDoc, collection } from 'firebase/firestore'
+const auth = getAuth()
+const email = ref('')
+const password = ref('')
+const username = ref('')
+const bitcoinWallet = ref('')
+const ethereumWallet = ref('')
+const error = ref('')
+const router = useRouter()
+const addToDB = async () => {
+    try {
+        console.log('Adding data to db...');
+        const docRef = await addDoc(collection(db, 'users'), {
+            name: username.value,
+            email: email.value
+        })
+        console.log('Document written with ID ', docRef.id);
+    } catch (e) {
+        console.log('Error adding document:', e);
+    }
+}
+const handleSubmit = async () => {
+    try {
+        console.log('creating user...')
+        await createUserWithEmailAndPassword(auth, email.value, password.value)
+        addToDB()
+        print('Every process is finished')
+        router.push('/login')
+    } catch (err) {
+        error.value = err.message
+    }
+
+}
+</script>
+
+<template>
+    <!-- START HEADER SECTION -->
+    <header class="main-header header-1">
+        <!-- START LOGO AREA -->
+        <div class="logo-area">
+            <div class="auto-container">
+                <div class="logo">
+                    <RouterLink to="/">
+                        <a>
+                            <h2>
+                                Golden
+                                <span class="hub">Hub</span> Trade
+                            </h2>
+                        </a>
+                    </RouterLink>
+                </div>
+            </div>
+        </div>
+        <!-- END LOGO AREA -->
+    </header>
+    <!-- END HEADER SECTION -->
+    <form>
+        <div class="container">
+            <h1>Register</h1>
+            <p>Please fill in this form to create an account.</p>
+            <hr />
+
+            <label for="username">
+                <b>Username</b>
+            </label>
+            <input
+                type="text"
+                placeholder="Enter Username"
+                name="name"
+                id="name"
+                required
+                v-model="username"
+            />
+
+            <label for="email">
+                <b>Email</b>
+            </label>
+            <input
+                type="text"
+                placeholder="Enter Email"
+                name="email"
+                id="email"
+                required
+                v-model="email"
+            />
+
+            <label for="bitcoin">
+                <b>Bitcoin Wallet</b>
+            </label>
+            <input
+                type="text"
+                placeholder="Enter your bitoin wallet"
+                name="email"
+                id="email"
+                required
+                v-model="bitcoinWallet"
+            />
+
+            <label for="eth">
+                <b>Ethereum Wallet</b>
+            </label>
+            <input
+                type="text"
+                placeholder="Enter Ethereum Wallet"
+                name="eth"
+                id="eth"
+                required
+                v-model="ethereumWallet"
+            />
+
+            <label for="psw">
+                <b>Password</b>
+            </label>
+            <input
+                type="password"
+                placeholder="Enter Password"
+                name="psw"
+                id="psw"
+                required
+                v-model="password"
+            />
+            <hr />
+
+            <p>
+                By creating an account you agree to our
+                <a href="#">Terms & Privacy</a>.
+            </p>
+            <p v-if="error.value != ''" class="text-danger">{{ error }}</p>
+            <a type="button" @click="handleSubmit" class="registerbtn btn text-white">Register</a>
+        </div>
+
+        <div class="container signin">
+            <p>
+                Already have an account?
+                <RouterLink to="/login">
+                    <a>Sign in</a>.
+                </RouterLink>
+            </p>
+        </div>
+    </form>
+</template>
+
+<style scoped>
+.container {
+    padding: 16px;
+}
+
+/* Full-width input fields */
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 15px;
+    margin: 5px 0 22px 0;
+    display: inline-block;
+    border: none;
+    background: #f1f1f1;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    background-color: #ddd;
+    outline: none;
+}
+
+/* Overwrite default styles of hr */
+hr {
+    border: 1px solid #f1f1f1;
+    margin-bottom: 25px;
+}
+
+/* Set a style for the submit/register button */
+.registerbtn {
+    background-color: orange;
+    color: white;
+    padding: 16px 20px;
+    margin: 8px 0;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+    opacity: 0.9;
+}
+
+.registerbtn:hover {
+    opacity: 1;
+}
+
+/* Add a blue text color to links */
+a {
+    color: dodgerblue;
+}
+
+/* Set a grey background color and center the text of the "sign in" section */
+.signin {
+    background-color: #f1f1f1;
+    text-align: center;
+}
+.hub {
+    color: orange;
+}
+</style>
