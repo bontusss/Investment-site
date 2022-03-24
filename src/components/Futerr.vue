@@ -101,7 +101,7 @@
                         <!-- END SECTION TITLE -->
                         <div class="col-12 footer-widget-inner recentPost">
                             <div class="singleRecpost">
-                                <img src="assets/img/blog/1.jpg" class="img-fluid" />
+                                <img src="src/assets/img/blog/1.jpg" class="img-fluid" />
                                 <h6 class="recTitle">
                                     <a href="#">Lorem ipsum dolor sit amet, consectetuer.</a>
                                 </h6>
